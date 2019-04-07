@@ -117,7 +117,7 @@ def _watch(inotify, watchers, watch_flags, s3_uploader):
     executor.shutdown(wait=True)
 
 
-def start_sync(s3_output_location, region):
+def start_sync(s3_output_location, region, endpoint_url=None):
     """Starts intermediate folder sync which copies files from 'opt/ml/output/intermediate'
     directory to the provided s3 output location as files created or modified.
     If files are deleted it doesn't delete them from s3.
@@ -151,7 +151,7 @@ def start_sync(s3_output_location, region):
         raise ValueError("Expecting 's3' scheme, got: %s in %s" % (url.scheme, url))
 
     # create s3 transfer client
-    client = boto3.client('s3', region)
+    client = boto3.client('s3', region, endpoint_url=endpoint_url)
     s3_transfer = s3transfer.S3Transfer(client)
     s3_uploader = {
         'transfer': s3_transfer,
